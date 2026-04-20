@@ -1,5 +1,6 @@
-const mongosoe = require("mongoose");
-const userSchema = new mongosoe.Schema(
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const userSchema = new mongoose.Schema(
   {
     userName: {
       type: String,
@@ -21,9 +22,9 @@ const userSchema = new mongosoe.Schema(
     },
     password: {
       type: String,
-      require: [true, "Password require"],
+      require: [true, "Password required"],
       trim: true,
-      minlength: [8, "At least 8 characters are reuired "],
+      // minlength: [8, "At least 8 characters are reuired "],
       select: false,
     },
   },
@@ -32,16 +33,11 @@ const userSchema = new mongosoe.Schema(
   },
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
