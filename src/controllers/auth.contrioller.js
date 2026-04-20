@@ -73,8 +73,16 @@ async function userLoginController(req, res) {
       message: "Invalid email or password",
     });
   }
+  const token = jwt.sign(
+    { id: isUserWithEmailExist._id, userName: isUserWithEmailExist.userName },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" },
+  );
+
+  res.cookie("token", token);
   res.status(200).json({
     message: "Login successfull",
+    id: isUserWithEmailExist._id,
   });
 }
 
