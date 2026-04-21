@@ -94,7 +94,7 @@ async function userLogoutController(req, res) {
       message: "Logout sucessfully",
     });
   }
-  const blacklistToken = await blacklistTokenModel({
+  const blacklistToken = await blacklistTokenModel.create({
     token,
   });
 
