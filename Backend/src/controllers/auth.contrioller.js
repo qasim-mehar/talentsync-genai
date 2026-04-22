@@ -35,9 +35,11 @@ async function userRegisterController(req, res) {
 
     res.status(201).json({
       message: "User register successfully",
-      id: user._id,
+      user:{
+        id: user._id,
       userName: user.userName,
       email: user.email,
+      }
     });
   } catch (error) {
     console.error("Registration Error:", error);
@@ -83,7 +85,11 @@ async function userLoginController(req, res) {
   res.cookie("token", token);
   res.status(200).json({
     message: "Login successfull",
-    id: isUserWithEmailExist._id,
+    user:{
+      id: isUserWithEmailExist._id,
+      userName:isUserWithEmailExist.userName,
+      email:isUserWithEmailExist.email,
+    }
   });
 }
 
