@@ -4,19 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qasim-mehar/talentsync-genai.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.4.1",
-    "nodemon": "^3.1.14"
+  "bugs": {
+    "url": "https://github.com/qasim-mehar/talentsync-genai/issues"
+  },
+  "homepage": "https://github.com/qasim-mehar/talentsync-genai#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
