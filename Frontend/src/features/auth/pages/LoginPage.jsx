@@ -1,19 +1,23 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate= useNavigate();
+  const {isLoading, handleLogin}=useAuth()
 
-  const onSubmit = (e) => {
+  const [email, setEmail]=useState("")
+  const [password, setPassword]=useState("")
+
+  const onSubmit =async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+     await handleLogin({email,password});
+      navigate("/")
+    
   };
 
   return (
@@ -28,6 +32,8 @@ export function LoginPage() {
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input 
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
             id="email" 
             placeholder="name@example.com" 
             type="email" 
@@ -46,6 +52,8 @@ export function LoginPage() {
             </a>
           </div>
           <Input 
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
             id="password" 
             type="password" 
             required 

@@ -3,17 +3,22 @@ import { AuthLayout } from "../components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function RegisterPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate= useNavigate()
+  const {handleRegister, isLoading}=useAuth();
 
-  const onSubmit = (e) => {
+  const [username, setUsername]=useState("")
+  const [email, setEmail]=useState("")
+  const [password, setPassword]=useState("")
+
+  const onSubmit =async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const success = await handleRegister({userName: username, password, email});
+      navigate("/login");
+    
   };
 
   return (
@@ -28,6 +33,8 @@ export function RegisterPage() {
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
           <Input 
+            value={username}
+            onChange={(e)=>setUsername(e.target.value)}
             id="username" 
             placeholder="johndoe" 
             required 
@@ -37,6 +44,8 @@ export function RegisterPage() {
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input 
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
             id="email" 
             placeholder="name@example.com" 
             type="email" 
@@ -50,6 +59,8 @@ export function RegisterPage() {
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input 
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
             id="password" 
             type="password" 
             required 
