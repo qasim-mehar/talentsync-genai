@@ -26,7 +26,7 @@ async function userRegisterController(req, res) {
     });
 
     const token = jwt.sign(
-      { id: user._id, userName: user.userName },
+      { _id: user._id, userName: user.userName },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
@@ -77,7 +77,7 @@ async function userLoginController(req, res) {
     });
   }
   const token = jwt.sign(
-    { id: isUserWithEmailExist._id, userName: isUserWithEmailExist.userName },
+    { _id: isUserWithEmailExist._id, userName: isUserWithEmailExist.userName },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
   );
