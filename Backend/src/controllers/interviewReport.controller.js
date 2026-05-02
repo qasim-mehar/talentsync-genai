@@ -169,14 +169,20 @@ async function generateInterviewReportController(req, res) {
   }
 }
 
+/**
+ * @route   GET /api/interview/report
+ * @desc    Get all interview reports for the logged in user
+ * @access  Private (requires JWT)
+ * @returns {200} Array of interview reports
+ * @returns {500} Server error
+ */
 async function getAllReportsController(req, res) {
   try {
-    const userId = req.user._id;
-    // Fetch all reports for the logged in user, sorted by newest first
-    const reports = await interviewReportModel.find({ userId })
+    // Fetch all reports for the logged in user, sorted by newest first for just title only not the whole report 
+    const reports = await interviewReportModel.find({ userId:req.user?._id })
       .sort({ createdAt: -1 })
-      .limit(20);
-
+      .limit(20)
+      .select("title createdAt"); 
     return res.status(200).json({
       success: true,
       message: "Reports fetched successfully",
@@ -190,7 +196,15 @@ async function getAllReportsController(req, res) {
     });
   }
 }
-
+/**
+ * @route   GET /api/interview/report/:interviewId
+ * @desc    Get interview report by ID for the logged in user
+ * @access  Private (requires JWT)
+ * @param   {string} interviewId - The ID of the report to fetch
+ * @returns {200} Interview report data
+ * @returns {404} Report not found
+ * @returns {500} Server error
+ */
 async function getReportByIdController(req, res) {
   try {
     const { interviewId } = req.params;
@@ -207,7 +221,7 @@ async function getReportByIdController(req, res) {
     const report = await interviewReportModel.findOne({
       _id: interviewId,
       userId: req.user._id,
-    });
+    }).select("-resume -jobDescription -selfDescription"); // pure exclusion — strip heavy text fields
 
 
     if (!report) {
