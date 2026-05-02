@@ -8,6 +8,10 @@ const ai = new GoogleGenAI({
 const responseSchema = {
   type: Type.OBJECT,
   properties: {
+    title:{
+      type:Type.STRING,
+      description:"Generate a catchy and really really short title consist on onlt two words maximum for the interview report. Focus on the role candidate is applying for."
+    },
     matchScore: {
       type: Type.NUMBER,
       description:
@@ -20,6 +24,11 @@ const responseSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
+          difficultyLevel:{
+            type:Type.STRING,
+            enum: ["Easy", "Medium", "Hard"],
+            description:"The difficulty level of the question. strictly one of Easy, Medium or Hard. Do not use any other value.",
+          },
           question: {
             type: Type.STRING,
             description: "The technical interview question.",
@@ -35,7 +44,7 @@ const responseSchema = {
               "A detailed model answer including thought process, steps, and approach.",
           },
         },
-        required: ["question", "intention", "answer"],
+        required: ["difficultyLevel", "question", "intention", "answer"],
       },
     },
     behavioralQuestions: {
@@ -45,6 +54,10 @@ const responseSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
+          category:{
+            type:Type.STRING,
+            description:"The category of the question. What trait or soft skill it evaluates.It should be consist on only one word. For example, Leadership, Communication, Teamwork, Problem Solving, etc.",
+          },
           question: {
             type: Type.STRING,
             description: "The behavioral interview question.",
@@ -60,13 +73,13 @@ const responseSchema = {
               "How to answer effectively — key points to highlight and recommended approach.",
           },
         },
-        required: ["question", "intention", "answer"],
+        required: ["category", "question", "intention", "answer"],
       },
     },
     skillGaps: {
       type: Type.ARRAY,
       description:
-        "Skill gaps the candidate has based on comparing their resume to the job description.",
+        "Skill gaps the candidate has based on comparing their resume to the job description.It should be consist on only one word. The skills mentioned here are those that are present in the job description but are not present in the candidate's resume. For example, MachineLearning, AI, CloudComputing, CI/CD, AWS, Jenkins, Azure, GCP, etc.",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -112,6 +125,7 @@ const responseSchema = {
     },
   },
   required: [
+    "title",
     "matchScore",
     "technicalQuestions",
     "behavioralQuestions",
