@@ -1,8 +1,39 @@
 const mongoose = require("mongoose");
 
 
-const questionSchema = new mongoose.Schema(
+const technicalQuestionSchema = new mongoose.Schema(
   {
+    difficultyLevel: {
+      type: String,
+      enum: ["Easy", "Medium", "Hard"],
+      required: [true, "Difficulty level is required"],
+    },
+    question: {
+      type: String,
+      required: [true, "Question is required"],
+      trim: true,
+    },
+    intention: {
+      type: String,
+      required: [true, "Intention is required"],
+      trim: true,
+    },
+    answer: {
+      type: String,
+      required: [true, "Answer is required"],
+      trim: true,
+    },
+  },
+  { _id: false },
+);
+
+const behavioralQuestionSchema = new mongoose.Schema(
+  {
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      trim: true,
+    },
     question: {
       type: String,
       required: [true, "Question is required"],
@@ -74,6 +105,12 @@ const interviewReportSchema = new mongoose.Schema(
       required: [true, "User reference is required"],
       index: true,
     },
+    title:{
+      type:String,
+      required:[true, "Report title is required"],
+      trim:true,
+      
+    },
     jobDescription: {
       type: String,
       required: [true, "Job description is required"],
@@ -97,11 +134,11 @@ const interviewReportSchema = new mongoose.Schema(
       max: [100, "Match score cannot exceed 100"],
     },
     technicalQuestions: {
-      type: [questionSchema],
+      type: [technicalQuestionSchema],
       default: [],
     },
     behavioralQuestions: {
-      type: [questionSchema],
+      type: [behavioralQuestionSchema],
       default: [],
     },
     skillGaps: {
