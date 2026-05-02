@@ -79,7 +79,7 @@ const responseSchema = {
     skillGaps: {
       type: Type.ARRAY,
       description:
-        "Skill gaps the candidate has based on comparing their resume to the job description.It should be consist on only one word. The skills mentioned here are those that are present in the job description but are not present in the candidate's resume. For example, MachineLearning, AI, CloudComputing, CI/CD, AWS, Jenkins, Azure, GCP, etc.",
+        " The skills mentioned here are those that are present in the job description but are not present in the candidate's resume including hard and soft skills. It should be consist on only one or two words. For example, MachineLearning,Communication,Leadership, AI, CloudComputing, CI/CD, AWS, Jenkins, Azure, GCP, etc.",
       items: {
         type: Type.OBJECT,
         properties: {

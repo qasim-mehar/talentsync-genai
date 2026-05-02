@@ -1,29 +1,27 @@
-import { useState } from "react";
+
+import { useInterviewReport } from "../hooks/useInterviewReport";
 import { Button } from "@/components/ui/button";
 import { ResumeUploader } from "../components/ResumeUploader";
 import { JobDescriptionInput } from "../components/JobDescriptionInput";
 import { SelfDescriptionInput } from "../components/SelfDescriptionInput";
+import { useState } from "react";
 
 export function HomePage() {
+  const {isLoading, handleGenrateInterviewReport, report}= useInterviewReport()
+  
   // ── Local UI state ──
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
   const [selfDescription, setSelfDescription] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
+ 
 
   const isFormValid =
     resumeFile && jobDescription.trim().length > 0 && selfDescription.trim().length > 0;
 
   const handleGenerate = async () => {
     if (!isFormValid) return;
-    setIsGenerating(true);
-
-    // TODO: Wire up to hook layer (useInterviewReport)
-    // The hook will call the service layer which calls the API.
-    // For now, simulate a delay for UI demonstration.
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 3000);
+    // Navigation to the report page is handled inside the hook
+    await handleGenrateInterviewReport({ selfDescription, jobDescription, resumeFile });
   };
 
   return (
@@ -52,7 +50,7 @@ export function HomePage() {
               <ResumeUploader
                 file={resumeFile}
                 onFileChange={setResumeFile}
-                disabled={isGenerating}
+                disabled={isLoading}
               />
             </div>
 
@@ -61,12 +59,12 @@ export function HomePage() {
               <JobDescriptionInput
                 value={jobDescription}
                 onChange={setJobDescription}
-                disabled={isGenerating}
+                disabled={isLoading}
               />
               <SelfDescriptionInput
                 value={selfDescription}
                 onChange={setSelfDescription}
-                disabled={isGenerating}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -79,10 +77,10 @@ export function HomePage() {
             <Button
               id="generate-report-btn"
               onClick={handleGenerate}
-              disabled={!isFormValid || isGenerating}
+              disabled={!isFormValid || isLoading}
               className="h-12 px-8 rounded-xl text-sm font-semibold tracking-wide gap-2 transition-all duration-200 hover:shadow-md disabled:opacity-40"
             >
-              {isGenerating ? (
+              {isLoading ? (
                 <>
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -101,7 +99,7 @@ export function HomePage() {
               )}
             </Button>
             <p className="text-xs text-zinc-400">
-              {isGenerating
+              {isLoading
                 ? "Analysis in progress — approximately 30 seconds…"
                 : "Analysis takes approximately 30 seconds"}
             </p>

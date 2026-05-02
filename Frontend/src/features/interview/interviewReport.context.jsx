@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-const interviewReportContext=createContext();
+export const interviewReportContext=createContext();
 
 export function InterviewReportProvider({children}) {
     const [isLoading,setIsLoading]=useState(false);
