@@ -111,16 +111,32 @@ async function userLogoutController(req, res) {
   });
 }
 async function getMeController(req, res) {
-  const user = await userModel.findById({ _id: req.user.id });
+  try {
+   
+    const user = await userModel.findById(req.user._id);
 
-  res.status(200).json({
-    message: "User info fetched",
-    user: {
-      id: user._id,
-      userName: user.userName,
-      email: user.userName,
-    },
-  });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "User info fetched",
+      user: {
+        id: user._id,
+        userName: user.userName,
+        email: user.email,   // Fix: was incorrectly returning user.userName here
+      },
+    });
+  } catch (error) {
+    console.error("getMeController error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user info",
+    });
+  }
 }
 module.exports = {
   userRegisterController,
