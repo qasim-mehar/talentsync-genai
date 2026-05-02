@@ -13,4 +13,13 @@ router.post("/",
     interviewReportController.generateInterviewReportController
 )
 
+router.get("/report/interview/:interviewId",
+    authMiddleware.userAuthMiddleware, 
+    interviewReportController.getReportByIdController
+)
+router.get("/report/interview",
+    authMiddleware.userAuthMiddleware, 
+    interviewReportController.getAllReportsController
+)
+
 module.exports=router;

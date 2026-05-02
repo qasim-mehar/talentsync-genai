@@ -1,7 +1,7 @@
 const PDFParse = require("pdf-parse");
+const mongoose = require("mongoose");
 const interviewReportModel = require("../models/interviewReport.model");
 const { generateInterviewReport } = require("../services/ai.service");
-
 
 const ALLOWED_MIME_TYPES = ["application/pdf"];
 const MAX_RESUME_CHARS = 50000;
@@ -169,7 +169,70 @@ async function generateInterviewReportController(req, res) {
   }
 }
 
+async function getAllReportsController(req, res) {
+  try {
+    const userId = req.user._id;
+    // Fetch all reports for the logged in user, sorted by newest first
+    const reports = await interviewReportModel.find({ userId })
+      .sort({ createdAt: -1 })
+      .limit(20);
+
+    return res.status(200).json({
+      success: true,
+      message: "Reports fetched successfully",
+      data: reports,
+    });
+  } catch (error) {
+    console.error("Failed to fetch all reports:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching reports",
+    });
+  }
+}
+
+async function getReportByIdController(req, res) {
+  try {
+    const { interviewId } = req.params;
+
+    // Validate the ID format to prevent Mongoose CastErrors
+    if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid report ID format",
+      });
+    }
+
+    // Query by BOTH report ID and userId to prevent IDOR vulnerabilities
+    const report = await interviewReportModel.findOne({
+      _id: interviewId,
+      userId: req.user._id,
+    });
+
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Report fetched successfully",
+      data: report,
+    });
+  } catch (error) {
+    console.error("Failed to fetch report by ID:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching the report",
+    });
+  }
+}
 
 module.exports = {
   generateInterviewReportController,
+  getReportByIdController,
+  getAllReportsController,
 };
