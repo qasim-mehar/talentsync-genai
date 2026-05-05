@@ -3,8 +3,8 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors= require("cors")
 
-const authRoute = require("./routes/auth.route");
-const interviewReportRouter=require("./routes/interview.route")
+const authRoute = require("./features/auth/auth.route");
+const interviewReportRouter=require("./features/interview/interview.route")
 
 const app = express();
 

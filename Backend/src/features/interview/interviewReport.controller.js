@@ -1,7 +1,7 @@
 const PDFParse = require("pdf-parse");
 const mongoose = require("mongoose");
-const interviewReportModel = require("../models/interviewReport.model");
-const { generateInterviewReport } = require("../services/ai.service");
+const interviewReportModel = require("./interviewReport.model");
+const { generateInterviewReport } = require("./ai.service");
 
 const ALLOWED_MIME_TYPES = ["application/pdf"];
 const MAX_RESUME_CHARS = 50000;

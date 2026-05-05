@@ -1,0 +1,65 @@
+{
+  "project": "talentsync-genai",
+  "stack": {
+    "frontend": "React 19, Vite, TailwindCSS 4, Shadcn UI, React Router v7, Axios, Lucide React",
+    "backend": "Node.js, Express, MongoDB (Mongoose), Google Gemini API (@google/genai), bcryptjs, jsonwebtoken, multer, pdf-parse, zod (for schema validation)"
+  },
+  "architecture": "Feature-based module separation on frontend, MVC-like on backend.",
+  "directories": {
+    "Backend/src/": {
+      "config/": "DB connection setup.",
+      "middleware/": "auth.middleware.js (JWT validation), file.middleware.js (multer config for resume PDF uploads).",
+      "features/auth/": "Authentication feature (auth.controller.js, auth.route.js, user.model.js, blacklistToken.model.js).",
+      "features/interview/": "Interview feature (interviewReport.controller.js, interview.route.js, interviewReport.model.js, ai.service.js)."
+    },
+    "Frontend/src/": {
+      "components/ui/": "Reusable Shadcn UI components (button, card, input, label, textarea).",
+      "features/auth/": "Auth context, hooks (useAuth), protected routes (Protected.jsx), login/register pages, API calls.",
+      "features/interview/": "Report context, hooks (useInterviewReport), components (ResumeUploader, BehavioralQuestionsPanel, RoadMapPanel, TechnicalQuestionsPanel), pages (HomePage, InterviewReportPage).",
+      "lib/utils.js": "Tailwind class merging utils (clsx, twMerge)."
+    }
+  },
+  "api_endpoints": {
+    "Auth": {
+      "POST /api/users/register": "Registers a new user and returns JWT.",
+      "POST /api/users/login": "Authenticates user and returns JWT.",
+      "POST /api/users/logout": "Logs out user and blacklists token.",
+      "GET /api/users/get-me": "Gets current authenticated user."
+    },
+    "Interview": {
+      "POST /api/interview/": "Uploads resume (PDF) & descriptions, calls Gemini AI, generates report, saves to DB.",
+      "GET /api/interview/report/interview/:interviewId": "Fetches a specific generated interview report by ID.",
+      "GET /api/interview/report/interview": "Fetches all interview reports for the authenticated user."
+    }
+  },
+  "frontend_routes": {
+    "/": "HomePage (Protected) - Upload resume and details to generate a report.",
+    "/login": "LoginPage - User login form.",
+    "/register": "RegisterPage - User registration form.",
+    "/interview-report/:reportId": "InterviewReportPage - Displays generated report with tabs for Technical, Behavioral, Roadmap, etc.",
+    "*": "Fallback redirect to /login."
+  },
+  "state_management": {
+    "AuthContext": "Stores current user state, auth token, and authentication loading states.",
+    "InterviewReportContext": "Stores the currently fetched interview report and handles loading states during generation."
+  },
+  "schemas": {
+    "User": { "userName": "String", "email": "String", "password": "String(hashed)" },
+    "InterviewReport": {
+      "userId": "ObjectId",
+      "title": "String",
+      "jobDescription": "String",
+      "resume": "String",
+      "selfDescription": "String",
+      "matchScore": "Number(0-100)",
+      "technicalQuestions": "[{ difficultyLevel, question, intention, answer }]",
+      "behavioralQuestions": "[{ category, question, intention, answer }]",
+      "skillGaps": "[{ skill, severity }]",
+      "preparationPlan": "[{ day, focus, tasks: [String] }]"
+    }
+  },
+  "key_flows": {
+    "Authentication": "User submits credentials -> Backend validates, signs JWT -> Frontend saves JWT and sets user in AuthContext.",
+    "Report_Generation": "User uploads PDF resume & texts on HomePage -> Backend parses PDF with pdf-parse -> AI Service uses Gemini to map resume to job desc via Zod schema -> JSON saved in MongoDB -> User redirected to /interview-report/:reportId."
+  }
+}

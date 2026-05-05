@@ -1,5 +1,5 @@
-const userModel = require("../models/user.model");
-const blacklistTokenModel = require("../models/blacklistToken.model");
+const userModel = require("./user.model");
+const blacklistTokenModel = require("./blacklistToken.model");
 const jwt = require("jsonwebtoken");
 async function userRegisterController(req, res) {
   const { userName, password, email } = req.body;
