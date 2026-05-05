@@ -5,12 +5,13 @@ const cors= require("cors")
 
 const authRoute = require("./features/auth/auth.route");
 const interviewReportRouter=require("./features/interview/interview.route")
+const resumeRouter = require("./features/resume/resume.route")
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
     credentials: true
 }))
 app.use(cookieParser());
@@ -45,5 +46,6 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoute);
 app.use("/api/interview", interviewReportRouter)
+app.use("/api/resume", resumeRouter)
 
 module.exports = app;

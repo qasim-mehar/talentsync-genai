@@ -181,9 +181,9 @@ interviewReportSchema.statics.findByUser = function (
     .lean();
 };
 
-const InterviewReport = mongoose.model(
+const InterviewReportModel = mongoose.model(
   "InterviewReport",
   interviewReportSchema,
 );
 
-module.exports = InterviewReport;
+module.exports = InterviewReportModel;
