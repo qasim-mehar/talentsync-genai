@@ -7,18 +7,18 @@ const upload= require("../../middleware/file.middleware")
 
 const router = express.Router()
 
-router.post("/", 
-    authMiddleware.userAuthMiddleware,
+router.post("/",
+    // authMiddleware.optionalUserAuthMiddleware,
     upload.single("resume"),
     interviewReportController.generateInterviewReportController
 )
 
 router.get("/report/interview/:interviewId",
-    authMiddleware.userAuthMiddleware, 
+    authMiddleware.optionalUserAuthMiddleware,
     interviewReportController.getReportByIdController
 )
 router.get("/report/interview",
-    authMiddleware.userAuthMiddleware, 
+    authMiddleware.userAuthMiddleware,
     interviewReportController.getAllReportsController
 )
 

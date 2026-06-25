@@ -102,7 +102,7 @@ const interviewReportSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-      required: [true, "User reference is required"],
+      required: false,
       index: true,
     },
     title:{

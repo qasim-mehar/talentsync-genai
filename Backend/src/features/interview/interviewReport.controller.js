@@ -1,7 +1,10 @@
 const PDFParse = require("pdf-parse");
 const mongoose = require("mongoose");
 const interviewReportModel = require("./interviewReport.model");
-const { generateInterviewReport } = require("./ai.service");
+const { generateInterviewReportByGemini } = require("./GeminiReportGen.service");
+const { generateInterviewReportByMistral} = require("./mistralReportGen.service");
+
+const { generateInterviewReportWithFallback } = require("./fallbackHandler.service");
 
 const ALLOWED_MIME_TYPES = ["application/pdf"];
 const MAX_RESUME_CHARS = 50000;
@@ -11,35 +14,25 @@ const MAX_SELF_DESC_LENGTH = 5000;
 
 /**
  * Cleans raw PDF-parsed text by normalizing whitespace artifacts.
- * @param {string} raw - The raw text from pdf-parse
- * @returns {string} Cleaned, human-readable text
  */
 function cleanResumeText(raw) {
   return raw
-    .replace(/\t+/g, " ")            // collapse tabs into single space
-    .replace(/ {2,}/g, " ")          // collapse multiple spaces
-    .replace(/^\s+$/gm, "")          // clear whitespace-only lines
-    .replace(/\n{3,}/g, "\n\n")      // max two consecutive newlines
-    .replace(/--\s*\d+\s*of\s*\d+\s*--/gi, "") // remove "-- 1 of 1 --" footer
+    .replace(/\t+/g, " ")
+    .replace(/ {2,}/g, " ")
+    .replace(/^\s+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/--\s*\d+\s*of\s*\d+\s*--/gi, "")
     .trim();
 }
 
 /**
  * @route   POST /api/interview
  * @desc    Generate an AI-powered interview preparation report
- * @access  Private (requires JWT)
- *
- * @body    {string}  jobDescription  - The job posting text (required)
- * @body    {string}  selfDescription - Candidate self-introduction (optional)
- * @file    resume                    - PDF file upload (required, max 3 MB)
- *
- * @returns {201} Created interview report
- * @returns {400} Validation error (missing fields, bad file type, empty PDF)
- * @returns {500} Server / AI generation error
+ * @access  Public
  */
 async function generateInterviewReportController(req, res) {
   try {
-    
+    //file checks
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -54,7 +47,7 @@ async function generateInterviewReportController(req, res) {
       });
     }
 
-    
+    /* - body checks  */
     const { jobDescription, selfDescription } = req.body;
 
     if (!jobDescription || typeof jobDescription !== "string") {
@@ -71,6 +64,7 @@ async function generateInterviewReportController(req, res) {
         message: `Job description must be at least ${MIN_JOB_DESC_LENGTH} characters`,
       });
     }
+
     if (trimmedJobDesc.length > MAX_JOB_DESC_LENGTH) {
       return res.status(400).json({
         success: false,
@@ -86,11 +80,12 @@ async function generateInterviewReportController(req, res) {
       });
     }
 
-   
+    /*  parse resume  */
     let cleanedResume;
+
     try {
       const resumeContent = await new PDFParse.PDFParse(
-        Uint8Array.from(req.file.buffer),
+        Uint8Array.from(req.file.buffer)
       ).getText();
 
       cleanedResume = cleanResumeText(resumeContent.text);
@@ -118,41 +113,55 @@ async function generateInterviewReportController(req, res) {
       });
     }
 
-    
-    let interviewReportByAI;
+    /*  AI generation  */
+    let aiResult;
+
     try {
-      interviewReportByAI = await generateInterviewReport({
+      aiResult = await generateInterviewReportWithFallback({
         resume: cleanedResume,
         selfDescription: trimmedSelfDesc,
         jobDescription: trimmedJobDesc,
       });
     } catch (aiError) {
       console.error("AI generation failed:", aiError);
+
       return res.status(500).json({
         success: false,
-        message:
-          "AI service is temporarily unavailable. Please try again in a few moments",
+        message: "Both AI providers failed to generate the report",
+        error:
+          process.env.NODE_ENV !== "production"
+            ? {
+                message: aiError.message,
+                details: aiError.details || [],
+              }
+            : undefined,
       });
     }
 
-   
+    const { report, provider } = aiResult;
+
+    /*  save report in DB  */
     const interviewReport = await interviewReportModel.create({
-      userId: req.user._id,
+      // if user is logged in save id, otherwise keep it undefined / null
+      userId: req.user?._id || undefined,
+
       jobDescription: trimmedJobDesc,
       selfDescription: trimmedSelfDesc,
       resume: cleanedResume,
-      ...interviewReportByAI,
+
+      aiProvider: provider,
+      ...report,
     });
 
     return res.status(201).json({
       success: true,
       message: "Interview report generated successfully",
+      provider,
       data: interviewReport,
     });
   } catch (error) {
     console.error("Interview report generation failed:", error);
 
-    
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((e) => e.message);
       return res.status(400).json({
@@ -169,6 +178,10 @@ async function generateInterviewReportController(req, res) {
   }
 }
 
+module.exports = {
+  generateInterviewReportController,
+};
+
 /**
  * @route   GET /api/interview/report
  * @desc    Get all interview reports for the logged in user
@@ -178,11 +191,11 @@ async function generateInterviewReportController(req, res) {
  */
 async function getAllReportsController(req, res) {
   try {
-    // Fetch all reports for the logged in user, sorted by newest first for just title only not the whole report 
+    // Fetch all reports for the logged in user, sorted by newest first for just title only not the whole report
     const reports = await interviewReportModel.find({ userId:req.user?._id })
       .sort({ createdAt: -1 })
       .limit(20)
-      .select("title createdAt"); 
+      .select("title createdAt");
     return res.status(200).json({
       success: true,
       message: "Reports fetched successfully",
@@ -217,10 +230,9 @@ async function getReportByIdController(req, res) {
       });
     }
 
-    // Query by BOTH report ID and userId to prevent IDOR vulnerabilities
+    // Query by ID only first
     const report = await interviewReportModel.findOne({
       _id: interviewId,
-      userId: req.user._id,
     }).select("-resume -jobDescription -selfDescription"); // pure exclusion — strip heavy text fields
 
 
@@ -228,6 +240,14 @@ async function getReportByIdController(req, res) {
       return res.status(404).json({
         success: false,
         message: "Report not found",
+      });
+    }
+
+    // Check authorization: if report belongs to a user, the requester must be that user
+    if (report.userId && (!req.user || report.userId.toString() !== req.user._id.toString())) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access to this report",
       });
     }
 

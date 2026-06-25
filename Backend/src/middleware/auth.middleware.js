@@ -28,4 +28,26 @@ async function userAuthMiddleware(req, res, next) {
   }
 }
 
-module.exports = { userAuthMiddleware };
+async function optionalUserAuthMiddleware(req, res, next) {
+  const token = req.cookies?.token;
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    const isTokenBlacklisted = await blacklistTokenModel.findOne({ token });
+    if (isTokenBlacklisted) {
+      req.user = null;
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+  } catch (err) {
+    req.user = null;
+  }
+  next();
+}
+
+module.exports = { userAuthMiddleware, optionalUserAuthMiddleware };
