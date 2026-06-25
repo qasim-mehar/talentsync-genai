@@ -134,7 +134,7 @@ const responseSchema = {
   ],
 };
 
-async function generateInterviewReport({
+async function generateInterviewReportByGemini({
   resume,
   selfDescription,
   jobDescription,
@@ -170,8 +170,8 @@ Be thorough and specific. Every question MUST have all three fields: question, i
 
   return JSON.parse(res.text);}catch (error) {
     console.error("AI Generation Error:", error);
-    throw new Error("Failed to generate interview report from AI service"); 
+    throw new Error("Failed to generate interview report from AI service");
   }
 }
 
-module.exports = { generateInterviewReport };
+module.exports = { generateInterviewReportByGemini };
