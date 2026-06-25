@@ -5,6 +5,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════
+   SHADCN BASE TOKENS
+═══════════════════════════════════════════════════════════════ */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -39,6 +42,34 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* ═══════════════════════════════════════════════════════════
+     TALENTSYNC DESIGN TOKENS
+  ═══════════════════════════════════════════════════════════ */
+
+  /* Brand accent — electric indigo */
+  --ts-accent:       oklch(0.62 0.22 262);
+  --ts-accent-dim:   oklch(0.55 0.24 262);
+  --ts-accent-muted: oklch(0.62 0.22 262 / 0.12);
+  --ts-accent-border:oklch(0.62 0.22 262 / 0.3);
+
+  /* Text ink scale */
+  --ts-ink:          oklch(0.09 0 0);
+  --ts-ink-muted:    oklch(0.42 0 0);
+  --ts-ink-faint:    oklch(0.62 0 0);
+
+  /* Surfaces */
+  --ts-surface:      oklch(0.985 0 0);
+  --ts-surface-alt:  oklch(0.975 0 0);
+  --ts-hero-bg:      #09090b;
+
+  /* Semantic colours */
+  --ts-green:        oklch(0.62 0.17 152);
+  --ts-green-muted:  oklch(0.62 0.17 152 / 0.12);
+  --ts-amber:        oklch(0.72 0.15 70);
+  --ts-amber-muted:  oklch(0.72 0.15 70 / 0.12);
+  --ts-red:          oklch(0.60 0.22 27);
+  --ts-red-muted:    oklch(0.60 0.22 27 / 0.12);
 }
 
 .dark {
@@ -117,17 +148,169 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* TalentSync tokens available as Tailwind utilities */
+  --color-ts-accent:       var(--ts-accent);
+  --color-ts-accent-dim:   var(--ts-accent-dim);
+  --color-ts-accent-muted: var(--ts-accent-muted);
+  --color-ts-ink:          var(--ts-ink);
+  --color-ts-ink-muted:    var(--ts-ink-muted);
+  --color-ts-ink-faint:    var(--ts-ink-faint);
+  --color-ts-surface:      var(--ts-surface);
+  --color-ts-surface-alt:  var(--ts-surface-alt);
+  --color-ts-green:        var(--ts-green);
+  --color-ts-green-muted:  var(--ts-green-muted);
+  --color-ts-amber:        var(--ts-amber);
+  --color-ts-amber-muted:  var(--ts-amber-muted);
+  --color-ts-red:          var(--ts-red);
+  --color-ts-red-muted:    var(--ts-red-muted);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   BASE STYLES
+═══════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TALENTSYNC KEYFRAME ANIMATIONS
+═══════════════════════════════════════════════════════════════ */
+
+@keyframes ts-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes ts-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ts-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+@keyframes ts-score-arc {
+  from { stroke-dashoffset: 226.19; }
+}
+
+/* Hero SVG — slow spin */
+@keyframes ts-spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Hero SVG — orbiting dot */
+@keyframes ts-orbit-hero {
+  from { transform: rotate(0deg)   translateX(148px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(148px) rotate(-360deg); }
+}
+
+/* Hero SVG — pulsing node */
+@keyframes ts-pulse-dot {
+  0%, 100% { opacity: 0.4; r: 4; }
+  50%       { opacity: 1;   r: 5.5; }
+}
+
+/* Utility animation classes */
+.ts-animate-fade-up {
+  animation: ts-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ts-animate-fade-in {
+  animation: ts-fade-in 0.4s ease both;
+}
+.ts-animate-scale-in {
+  animation: ts-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered delay helpers */
+.ts-delay-1 { animation-delay: 0.08s; }
+.ts-delay-2 { animation-delay: 0.16s; }
+.ts-delay-3 { animation-delay: 0.24s; }
+.ts-delay-4 { animation-delay: 0.32s; }
+.ts-delay-5 { animation-delay: 0.4s;  }
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING PAGE GRID BACKGROUND
+═══════════════════════════════════════════════════════════════ */
+.ts-grid-bg {
+  background-color: var(--ts-hero-bg);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.028) 39px,
+      rgba(255, 255, 255, 0.028) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.028) 39px,
+      rgba(255, 255, 255, 0.028) 40px
+    );
+}
+
+/* Radial light bloom in hero centre */
+.ts-hero-bloom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 40%,
+    oklch(0.62 0.22 262 / 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHARED UTILITY CLASSES
+═══════════════════════════════════════════════════════════════ */
+
+/* Score arc animation trigger */
+.ts-score-arc {
+  animation: ts-score-arc 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Accent gradient text */
+.ts-gradient-text {
+  background: linear-gradient(135deg, var(--ts-accent) 0%, oklch(0.72 0.18 290) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover lift */
+.ts-card-hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ts-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.08);
+}
+
+/* Before/after resume bullets */
+.ts-bullet-after {
+  border-left: 3px solid var(--ts-accent);
+  padding-left: 12px;
+}
+
+/* Backdrop blur nav */
+.ts-nav-glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid oklch(0.922 0 0);
 }

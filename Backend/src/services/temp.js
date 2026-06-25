@@ -1,9 +1,9 @@
 const jobDescription = `
 We are looking for a Full-Stack GenAI Engineer to join our product team at TalentSync.
-You will design and build AI-powered features end-to-end — from React frontends to 
-Node.js/Express backends — integrating large language models (Gemini) into 
-production workflows. Responsibilities include architecting RESTful APIs, designing 
-MongoDB schemas, building prompt pipelines with structured output, implementing 
+You will design and build AI-powered features end-to-end — from React frontends to
+Node.js/Express backends — integrating large language models (Gemini) into
+production workflows. Responsibilities include architecting RESTful APIs, designing
+MongoDB schemas, building prompt pipelines with structured output, implementing
 authentication/authorization (JWT, OAuth), and deploying on cloud platforms (GCP/AWS).
 
 Requirements:
@@ -44,12 +44,12 @@ Projects:
 `;
 
 const selfDescription = `
-I'm Qasim Ali, a MERN stack developer with a strong focus on Generative AI integration. 
-I've been building full-stack web applications and recently shifted my focus toward 
-AI-powered products. I have hands-on experience integrating Google Gemini into Node.js 
-backends with structured JSON output using Zod schemas. I'm comfortable designing 
-MongoDB schemas, writing Express APIs, and building React frontends. I'm a fast learner 
-who enjoys solving complex problems and shipping production-quality code. I'm looking to 
+I'm Qasim Ali, a MERN stack developer with a strong focus on Generative AI integration.
+I've been building full-stack web applications and recently shifted my focus toward
+AI-powered products. I have hands-on experience integrating Google Gemini into Node.js
+backends with structured JSON output using Zod schemas. I'm comfortable designing
+MongoDB schemas, writing Express APIs, and building React frontends. I'm a fast learner
+who enjoys solving complex problems and shipping production-quality code. I'm looking to
 grow into a role where I can combine my full-stack skills with cutting-edge AI capabilities.
 `;
 
