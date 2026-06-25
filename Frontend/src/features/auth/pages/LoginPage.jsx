@@ -1,68 +1,117 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthLayout } from "../components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "../hooks/useAuth";
 
+// ─── LoginPage ────────────────────────────────────────────────────────────────
 export function LoginPage() {
-  const navigate= useNavigate();
-  const {isLoading, handleLogin}=useAuth()
+  const navigate = useNavigate();
+  const { isLoading, handleLogin } = useAuth();
 
-  const [email, setEmail]=useState("")
-  const [password, setPassword]=useState("")
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError]       = useState("");
 
-  const onSubmit =async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-     await handleLogin({email,password});
-      navigate("/")
-    
+    setError("");
+    try {
+      await handleLogin({ email, password });
+      navigate("/dashboard");
+    } catch {
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Enter your credentials to access your account"
+      subtitle="Sign in to access your reports and resumes"
       bottomText="Don't have an account?"
-      bottomLinkText="Sign up"
+      bottomLinkText="Create one free"
       bottomLinkTo="/register"
     >
       <form onSubmit={onSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input 
+        {/* Error banner */}
+        {error && (
+          <div
+            className="rounded-lg px-3 py-2.5 text-sm"
+            style={{
+              backgroundColor: "rgba(239,68,68,0.08)",
+              border: "1px solid rgba(239,68,68,0.2)",
+              color: "#fca5a5",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="text-sm font-medium" style={{ color: "#a1a1aa" }}>
+            Email address
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@example.com"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
-            id="email" 
-            placeholder="name@example.com" 
-            type="email" 
-            autoCapitalize="none"
+            onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            autoCorrect="off"
-            required 
-            className="h-11"
+            required
+            className="h-10 text-sm"
+            style={{
+              backgroundColor: "#111111",
+              borderColor: "#262626",
+              color: "#fafafa",
+            }}
           />
         </div>
-        <div className="space-y-2">
+
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <a href="#" className="text-sm font-medium text-zinc-900 underline underline-offset-4 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300">
+            <Label htmlFor="password" className="text-sm font-medium" style={{ color: "#a1a1aa" }}>
+              Password
+            </Label>
+            <a
+              href="#"
+              className="text-xs font-medium transition-colors"
+              style={{ color: "#52525b" }}
+              onMouseEnter={e => e.currentTarget.style.color = "#a1a1aa"}
+              onMouseLeave={e => e.currentTarget.style.color = "#52525b"}
+            >
               Forgot password?
             </a>
           </div>
-          <Input 
+          <Input
+            id="password"
+            type="password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
-            id="password" 
-            type="password" 
-            required 
-            className="h-11"
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+            className="h-10 text-sm"
+            style={{
+              backgroundColor: "#111111",
+              borderColor: "#262626",
+              color: "#fafafa",
+            }}
           />
         </div>
-        <Button className="w-full h-11" type="submit" disabled={isLoading}>
-          {isLoading ? "Signing in..." : "Sign in"}
-        </Button>
+
+        <button
+          type="submit"
+          id="login-submit-btn"
+          disabled={isLoading}
+          className="w-full h-10 text-sm font-semibold rounded-md transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ backgroundColor: "#fafafa", color: "#0a0a0a" }}
+          onMouseEnter={e => { if (!isLoading) e.currentTarget.style.backgroundColor = "#e4e4e7"; }}
+          onMouseLeave={e => { e.currentTarget.style.backgroundColor = "#fafafa"; }}
+        >
+          {isLoading ? "Signing in…" : "Sign in"}
+        </button>
       </form>
     </AuthLayout>
   );
