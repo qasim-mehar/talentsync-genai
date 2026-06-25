@@ -5,57 +5,49 @@
  * Expected gap shape: { id, title, severity: "high" | "medium" | "low" }
  */
 
-const SEVERITY_OPACITY = {
-  high: "bg-zinc-900 text-white",
-  medium: "bg-zinc-200 text-zinc-700",
-  low: "bg-zinc-100 text-zinc-500",
+const SEVERITY_STYLES = {
+  high:   { color: "#fafafa", bg: "#18181b", border: "#3f3f46" },
+  medium: { color: "#a1a1aa", bg: "#111111", border: "#27272a" },
+  low:    { color: "#52525b", bg: "#111111", border: "#1c1c1c" },
 };
 
 export function GapsSidebar({ gaps = [] }) {
   return (
-    <aside className="w-[220px] shrink-0 border-l border-zinc-200 bg-zinc-50/40 px-4 py-6 overflow-y-auto hidden lg:flex flex-col">
+    <aside
+      className="w-[220px] shrink-0 px-4 py-6 overflow-y-auto hidden lg:flex flex-col"
+      style={{ borderLeft: "1px solid #1c1c1c", backgroundColor: "#0a0a0a" }}
+    >
       {/* Heading */}
       <div className="flex items-center gap-2 mb-5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-200/70">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-zinc-500"
-          >
+        <div
+          className="flex h-7 w-7 items-center justify-center rounded-lg"
+          style={{ backgroundColor: "#111111", border: "1px solid #1c1c1c" }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#52525b" }}>
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
         </div>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          Gaps
+        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#3f3f46" }}>
+          Skill Gaps
         </h2>
       </div>
 
       {/* Gap Tags */}
       {gaps.length === 0 ? (
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs leading-relaxed" style={{ color: "#27272a" }}>
           No gaps identified — great job!
         </p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {gaps.map((gap) => {
-            const style = SEVERITY_OPACITY[gap.severity] || SEVERITY_OPACITY.low;
+            const style = SEVERITY_STYLES[gap.severity] || SEVERITY_STYLES.low;
             return (
               <div
                 key={gap.id}
-                className={`
-                  inline-flex items-center rounded-lg px-3 py-2
-                  text-xs font-medium leading-tight
-                  transition-opacity duration-150 cursor-default
-                  ${style}
-                `}
+                className="inline-flex items-center rounded-lg px-3 py-2 text-xs font-medium leading-tight cursor-default"
+                style={{ color: style.color, backgroundColor: style.bg, border: `1px solid ${style.border}` }}
               >
                 {gap.title}
               </div>
@@ -66,8 +58,8 @@ export function GapsSidebar({ gaps = [] }) {
 
       {/* Summary count */}
       {gaps.length > 0 && (
-        <div className="mt-5 pt-4 border-t border-zinc-200">
-          <p className="text-[11px] text-zinc-400">
+        <div className="mt-5 pt-4" style={{ borderTop: "1px solid #1c1c1c" }}>
+          <p className="text-[11px]" style={{ color: "#27272a" }}>
             {gaps.length} gap{gaps.length !== 1 ? "s" : ""} identified
           </p>
         </div>

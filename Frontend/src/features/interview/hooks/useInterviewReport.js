@@ -3,6 +3,23 @@ import { useNavigate } from "react-router";
 import { interviewReportContext } from "../interviewReport.context";
 import { genrateInterviewReport, getInterviewReport, getInterviewReportById } from "../services/interviewReport.api";
 
+// ─── Helper: extract a human-readable error message ──────────────────────────
+function parseError(err) {
+  const status = err?.response?.status;
+  const data   = err?.response?.data;
+
+  if (data && typeof data === "object" && data.message) return data.message;
+  if (typeof data === "string") return data;
+
+  if (status === 400) return "Oops, please check your input and try again.";
+  if (status === 401) return "Please log in to save and generate reports.";
+  if (status === 404) return "We couldn't find that report.";
+  if (status === 413) return "Your resume PDF is too large. Please upload a smaller one.";
+  if (status === 500) return "Our servers are taking a break. Please try again soon.";
+  if (err?.message) return err.message;
+  return "Something went wrong on our end. Please try again.";
+}
+
 export const useInterviewReport = () => {
     const context = useContext(interviewReportContext);
 
@@ -16,6 +33,7 @@ export const useInterviewReport = () => {
      * @param {string} jobDescription
      * @param {string} selfDescription
      * @param {File}   resumeFile
+     * @throws {Error} with a user-friendly message
      */
     async function handleGenrateInterviewReport({ selfDescription, jobDescription, resumeFile }) {
         setIsLoading(true);
@@ -26,7 +44,8 @@ export const useInterviewReport = () => {
             // Navigate after state is set using the returned id directly (not stale state)
             navigate(`/interview-report/${res.data._id}`);
         } catch (err) {
-            console.error("handleGenrateInterviewReport failed:", err);
+            const message = parseError(err);
+            throw new Error(message);
         } finally {
             setIsLoading(false);
         }
@@ -34,6 +53,7 @@ export const useInterviewReport = () => {
 
     /**
      * Fetches all report titles for the logged-in user.
+     * @throws {Error} with a user-friendly message
      */
     async function handleGetAllReports() {
         setIsLoading(true);
@@ -42,7 +62,8 @@ export const useInterviewReport = () => {
             // Fix: API returns { success, message, data } — store res.data
             setAllReports(res.data);
         } catch (err) {
-            console.error("handleGetAllReports failed:", err);
+            const message = parseError(err);
+            throw new Error(message);
         } finally {
             setIsLoading(false);
         }
@@ -51,6 +72,7 @@ export const useInterviewReport = () => {
     /**
      * Fetches a single full report by ID.
      * @param {string} interviewId
+     * @throws {Error} with a user-friendly message
      */
     async function handleGetReportById(interviewId) {
         setIsLoading(true);
@@ -59,8 +81,8 @@ export const useInterviewReport = () => {
             // Fix: API returns { success, message, data } — store res.data
             setInterviewReport(res.data);
         } catch (err) {
-            // Fix: typo "er" → "err"
-            console.error("handleGetReportById failed:", err);
+            const message = parseError(err);
+            throw new Error(message);
         } finally {
             setIsLoading(false);
         }

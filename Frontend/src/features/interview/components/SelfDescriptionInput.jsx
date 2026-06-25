@@ -6,9 +6,10 @@ export function SelfDescriptionInput({ value, onChange, disabled }) {
     <div className="space-y-3">
       <Label
         htmlFor="self-description"
-        className="text-sm font-semibold text-zinc-800 flex items-center gap-2"
+        className="text-sm font-semibold flex items-center gap-2"
+        style={{ color: "#a1a1aa" }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#52525b" }}>
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
@@ -16,13 +17,18 @@ export function SelfDescriptionInput({ value, onChange, disabled }) {
       </Label>
       <Textarea
         id="self-description"
-        placeholder="Tell us about yourself…&#10;&#10;e.g. I'm a software engineer with 4 years of experience in full-stack development. Proficient in React, Node.js, and cloud technologies…"
+        placeholder={"Tell us about yourself…\n\ne.g. I'm a software engineer with 4 years of experience in full-stack development. Proficient in React, Node.js, and cloud technologies…"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="min-h-[140px] bg-white text-sm leading-relaxed"
+        className="min-h-[140px] text-sm leading-relaxed resize-none"
+        style={{
+          backgroundColor: "#0a0a0a",
+          borderColor: "#262626",
+          color: "#d4d4d8",
+        }}
       />
-      <p className="text-xs text-zinc-400">
+      <p className="text-xs" style={{ color: "#3f3f46" }}>
         Highlight your experience, achievements, and why you're a great fit.
       </p>
     </div>
