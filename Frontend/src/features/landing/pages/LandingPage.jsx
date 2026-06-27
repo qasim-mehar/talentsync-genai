@@ -273,8 +273,8 @@ export function LandingPage() {
                 className="ts-animate-fade-up ts-delay-1 font-black tracking-tight text-white leading-[1.05]"
                 style={{ fontSize: "clamp(2.4rem, 5.5vw, 4.5rem)" }}
               >
-                Stop guessing.<br />
-                <span style={{ color: "#a1a1aa" }}>Start preparing.</span>
+                Stop losing to ATS.
+<span style={{ color: "#a1a1aa" }}> Start matching.</span>
               </h1>
 
               {/* Sub-headline */}
@@ -282,10 +282,11 @@ export function LandingPage() {
                 className="ts-animate-fade-up ts-delay-2 text-lg leading-relaxed max-w-md"
                 style={{ color: "#71717a" }}
               >
-                Upload your resume and paste a job description — get a complete
-                interview prep kit in under 30 seconds. Includes tailored questions,
-                skill gaps, a study roadmap, and an <strong className="font-semibold text-zinc-300">AI-rewritten resume (no login required)</strong>.
-              </p>
+               Transform your resume into an ATS powerhouse  optimized keywords, proven
+              formatting, and an impact score that shows how recruiters will see it. Upload
+              your resume and job description to get an <strong className="font-semibold text-zinc-300">  AI-engineered resume built for ATS systems</strong>, plus a detailed audit
+              showing exactly what moves the needle. Interview prep included no login required.
+                            </p>
 
               {/* CTA group */}
               <div className="ts-animate-fade-up ts-delay-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
@@ -294,7 +295,7 @@ export function LandingPage() {
                   to="/generate"
                   className="flex items-center justify-center gap-2 px-7 py-3 rounded-md text-sm font-semibold bg-white text-black transition-all duration-150 hover:bg-zinc-200 hover:translate-y-[-2px]"
                 >
-                  Analyze My Resume
+                  Build ATS Resume
                   <ArrowRight size={15} />
                 </Link>
                 <a

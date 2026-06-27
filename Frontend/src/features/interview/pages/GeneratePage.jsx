@@ -98,29 +98,8 @@ export function GeneratePage() {
           </p>
         </div>
 
-        {/* ── Resume feature highlight ── */}
-        <div
-          className="mb-6 flex items-start gap-4 rounded-xl px-5 py-4"
-          style={{
-            border: "1px solid #262626",
-            background: "rgba(255,255,255,0.02)",
-          }}
-        >
-          <div
-            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-          >
-            <Sparkles size={16} style={{ color: "#fafafa" }} />
-          </div>
-          <div>
-            <p className="text-sm font-semibold" style={{ color: "#fafafa" }}>
-              ✨ AI Resume Rewrite — Free &amp; No Login Required
-            </p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: "#a1a1aa" }}>
-              Fill in the form and click <strong style={{ color: "#fafafa" }}>"Generate Resume"</strong> to get an ATS-ready, one-page PDF resume rewritten by AI — tailored to the specific job. No account needed.
-            </p>
-          </div>
-        </div>
+
+
 
         {/* Auth nudge — for unauthenticated users */}
         {!userData && (
@@ -236,7 +215,7 @@ export function GeneratePage() {
                 id="generate-resume-btn"
                 onClick={handleGenerateResume}
                 disabled={!isFormValid || isLoading}
-                className="flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold transition-all duration-150 hover:translate-y-[-1px] disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+                className="flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-black bg-white transition-all duration-150 hover:bg-zinc-200 hover:translate-y-[-1px] disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
                 style={{
                   background: isFormValid && !isLoading ? "#fafafa" : "#262626",
                   color: isFormValid && !isLoading ? "#0a0a0a" : "#52525b",
@@ -246,7 +225,7 @@ export function GeneratePage() {
               >
                 <FileText size={15} />
                 Generate Resume PDF
-                <Sparkles size={14} />
+
               </button>
             </div>
 

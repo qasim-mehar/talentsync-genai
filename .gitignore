@@ -55,3 +55,4 @@ logs
 *.log
 coverage/
 .nyc_output/
+.agents

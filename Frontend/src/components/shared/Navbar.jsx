@@ -33,14 +33,7 @@ export function Navbar() {
 
         {/* ── Logo ── */}
         <Link to="/" className="flex items-center gap-2.5 group select-none">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-md transition-opacity group-hover:opacity-80"
-            style={{ backgroundColor: "#fafafa" }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5" fill="#0a0a0a" />
-            </svg>
-          </div>
+
           <span className="text-sm font-bold tracking-tight" style={{ color: "#fafafa" }}>
             TalentSync
           </span>
